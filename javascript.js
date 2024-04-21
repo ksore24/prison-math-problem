@@ -12,7 +12,6 @@ var count;
 const container = document.querySelector(".container");
 let loopStrategyButton = document.querySelector(".loopStrategyButton");
 let randomStrategyButton = document.querySelector(".randomStrategyButton");
-let clearAll = document.querySelector(".clearAll");
 
 for(i = 1; i < 101; i++)
 {
@@ -24,17 +23,11 @@ for(p = 1; p < 101; p++)
     boxArray[p] = p;
 }
 
-clearAll.addEventListener("click", clearAllButtonClicked);
-
 loopStrategyButton.addEventListener("click", loopStrategyButtonClicked);
-
-function clearAllButtonClicked()
-{
-    location.reload();
-}
 
 function loopStrategyButtonClicked()
 {   
+    clearContainer(container);
     randomizeBoxOrder(boxArray);
     getLoopResults(prisonerArray, boxArray);
 }
@@ -43,6 +36,7 @@ randomStrategyButton.addEventListener("click", randomStrategyButtonClicked)
 
 function randomStrategyButtonClicked()
 {
+    clearContainer(container);
     randomizeBoxOrder(boxArray);
     getRandomResults(prisonerArray, boxArray);
 }
@@ -100,23 +94,7 @@ function passFunction(count)
     container.appendChild(passFail);
 }
 
-function failFunction(count)
-{
-    let boxPicked = document.createElement("th");
-    let boxValue = document.createElement("th");
-    let passFail = document.createElement("div");
 
-    boxPicked.textContent = prisonerArray[nextSelection];
-    boxValue.textContent = boxArray[nextSelection];
-    passFail.textContent = "FAIL: " + count + " guesses";
-    passFail.style.color = "red";
-    boxValue.style.color = "red";
-    boxPicked.style.color = "red";
-
-    newTableRow1.appendChild(boxPicked);
-    newTableRow2.appendChild(boxValue);
-    container.appendChild(passFail);
-}
 
 function getLoopResults(prisonerArray, boxArray)
 {
@@ -174,4 +152,13 @@ function getLoopResults(prisonerArray, boxArray)
 function getRandomResults()
 {
 
+}
+
+function clearContainer(container)
+{
+    var div = document.querySelector(".container");
+    while(div.firstChild)
+    {
+        div.removeChild(div.firstChild);
+    }
 }
