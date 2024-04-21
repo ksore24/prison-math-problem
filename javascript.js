@@ -1,5 +1,6 @@
-let prisonerArray = [];
-let boxArray = [];
+let prisonerArray = createArray();
+let boxArray = createArray();
+let newBoxArray = [];
 var spacer;
 var tableHeading;
 var newTable;
@@ -9,21 +10,24 @@ var rowHeading1;
 var rowHeading2;
 var nextSelection;
 var count;
+
 const container = document.querySelector(".container");
 let loopStrategyButton = document.querySelector(".loopStrategyButton");
 let randomStrategyButton = document.querySelector(".randomStrategyButton");
 
-for(i = 1; i < 101; i++)
-{
-    prisonerArray[i] = i;
-}
-
-for(p = 1; p < 101; p++)
-{
-    boxArray[p] = p;
-}
-
 loopStrategyButton.addEventListener("click", loopStrategyButtonClicked);
+
+randomStrategyButton.addEventListener("click", randomStrategyButtonClicked)
+
+function createArray()
+{
+    var newArray = [];
+    for(i = 1; i < 101; i++)
+    {
+        newArray[i] = i;
+    }
+    return newArray;
+}
 
 function loopStrategyButtonClicked()
 {   
@@ -31,8 +35,6 @@ function loopStrategyButtonClicked()
     randomizeBoxOrder(boxArray);
     getLoopResults(prisonerArray, boxArray);
 }
-
-randomStrategyButton.addEventListener("click", randomStrategyButtonClicked)
 
 function randomStrategyButtonClicked()
 {
@@ -94,6 +96,15 @@ function passFunction(count)
     container.appendChild(passFail);
 }
 
+function failFunction(count)
+{
+    let boxPicked = document.createElement("td");
+    let boxValue = document.createElement("td");
+    let passFail = document.createElement("div");
+    passFail.textContent = "FAIL: " + count + " guesses";
+    passFail.style.color = "red";
+    container.appendChild(passFail);
+}
 
 
 function getLoopResults(prisonerArray, boxArray)
@@ -119,20 +130,13 @@ function getLoopResults(prisonerArray, boxArray)
 
                 if(count > 50)
                 {
-                    boxPicked.style.color = "red"
+                    boxPicked.style.color = "red";
+                    boxValue.style.color = "red";
                 }
 
                 if(boxArray[nextSelection] == prisonerArray[prisonerNumber])
                 {
-                    let passFail = document.createElement("div");
-                    passFail.textContent = "FAIL: " + count + " guesses";
-                    passFail.style.color = "red";
-                    container.appendChild(passFail);
-                    boxPicked.textContent = prisonerArray[nextSelection];
-                    boxValue.textContent = boxArray[nextSelection];
-    
-                    newTableRow1.appendChild(boxPicked);
-                    newTableRow2.appendChild(boxValue);
+                    failFunction(count);
                     count = 102;
                 }
 
@@ -151,7 +155,50 @@ function getLoopResults(prisonerArray, boxArray)
 
 function getRandomResults()
 {
+    for(a = 1; a < 101; a++)
+    {
+        newBoxArray = createArray();
+        createTable(a);
+        count = 1;
+        let prisonerNumber = a;
+        randomBoxSelection();
 
+        while(count < 101)
+        {
+            if(boxArray[nextSelection] == prisonerArray[prisonerNumber] && count < 51)
+            {
+                passFunction(count);
+                count = 102;
+            }
+            else
+            {
+                let boxPicked = document.createElement("td");
+                let boxValue = document.createElement("td");
+
+                if(count > 50)
+                {
+                    boxPicked.style.color = "red";
+                    boxValue.style.color = "red";
+                }
+
+                if(boxArray[nextSelection] == prisonerArray[prisonerNumber])
+                {
+                    failFunction(count);
+                    count = 102;
+                }
+
+                boxPicked.textContent = prisonerArray[nextSelection];
+                boxValue.textContent = boxArray[nextSelection];
+
+                newTableRow1.appendChild(boxPicked);
+                newTableRow2.appendChild(boxValue);
+
+                randomBoxSelection(newBoxArray);
+                
+                count++;
+            }
+        }
+    }
 }
 
 function clearContainer(container)
@@ -161,4 +208,19 @@ function clearContainer(container)
     {
         div.removeChild(div.firstChild);
     }
+}
+
+function randomBoxSelection()
+{
+    let randomBox = Math.floor((Math.random() * (newBoxArray.length - 1)) + 1)
+    nextSelection = newBoxArray[randomBox]
+    for(z = 1; z < newBoxArray.length + 1; z++)
+    {
+        if(newBoxArray[z] == newBoxArray[randomBox])
+        {
+            newBoxArray.splice(z, 1);
+        }
+    }
+
+    return nextSelection, newBoxArray;
 }
