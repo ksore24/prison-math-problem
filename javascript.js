@@ -1,25 +1,40 @@
 let prisonerArray = [];
 let boxArray = [];
-const prisonerNumberDiv = document.querySelector(".prisonerNumber");
-const boxPickedTR = document.querySelector(".boxPicked");
-const boxValueTR = document.querySelector(".boxValue");
-const loopStrategyButton = document.querySelector(".loopStrategyButton");
-const randomStrategyButton = document.querySelector(".randomStrategyButton");
+var spacer;
+var tableHeading;
+var newTable;
+var newTableRow1;
+var newTableRow2;
+var rowHeading1;
+var rowHeading2;
+var nextSelection;
+var count;
+const container = document.querySelector(".container");
+let loopStrategyButton = document.querySelector(".loopStrategyButton");
+let randomStrategyButton = document.querySelector(".randomStrategyButton");
+let clearAll = document.querySelector(".clearAll");
 
 for(i = 1; i < 101; i++)
 {
     prisonerArray[i] = i;
 }
 
-for(p = 0; p < 100; p++)
+for(p = 1; p < 101; p++)
 {
     boxArray[p] = p;
 }
 
-loopStrategyButton.addEventListener("click", loopStrategyButtonClicked)
+clearAll.addEventListener("click", clearAllButtonClicked);
+
+loopStrategyButton.addEventListener("click", loopStrategyButtonClicked);
+
+function clearAllButtonClicked()
+{
+    location.reload();
+}
 
 function loopStrategyButtonClicked()
-{
+{   
     randomizeBoxOrder(boxArray);
     getLoopResults(prisonerArray, boxArray);
 }
@@ -36,87 +51,118 @@ function randomizeBoxOrder(boxArray)
 {
     let randomSelection;
     let oldBoxNumber;
-    for(l = 99; l >= 0; l--)
+    for(l = 100; l > 0; l--)
     {
-        randomSelection = Math.floor(Math.random() * 100);
+        randomSelection = Math.floor((Math.random() * 100) + 1);
         oldBoxNumber = boxArray[l];
         boxArray[l] = boxArray[randomSelection];
         boxArray[randomSelection] = oldBoxNumber;
     }
 
-    for(j = 0; j < 100; j++)
-    {
-        boxArray[j] = boxArray[j] + 1;
-    }
-
     return boxArray;
+}
+
+function createTable(a)
+{
+    tableHeading = document.createElement("h4");
+    newTable = document.createElement("table");
+    newTableRow1 = document.createElement("tr");
+    newTableRow2 = document.createElement("tr");
+    rowHeading1 = document.createElement("th");
+    rowHeading2 = document.createElement("th");
+    tableHeading.textContent = "Prisoner Number: " + a;
+    rowHeading1.textContent = "Box Picked";
+    rowHeading2.textContent = "Box Value";
+    newTableRow1.appendChild(rowHeading1);
+    newTableRow2.appendChild(rowHeading2);
+    newTable.appendChild(newTableRow1);
+    newTable.appendChild(newTableRow2);
+    container.appendChild(tableHeading);
+    container.appendChild(newTable);
+}
+
+function passFunction(count)
+{
+    let boxPicked = document.createElement("th");
+    let boxValue = document.createElement("th");
+    let passFail = document.createElement("div");
+
+    boxPicked.textContent = prisonerArray[nextSelection];
+    boxValue.textContent = boxArray[nextSelection];
+    passFail.textContent = "PASS: " + count + " guesses";
+
+    passFail.style.color = "green";
+    boxValue.style.color = "green";
+    boxPicked.style.color = "green";
+
+    newTableRow1.appendChild(boxPicked);
+    newTableRow2.appendChild(boxValue);
+    container.appendChild(passFail);
+}
+
+function failFunction(count)
+{
+    let boxPicked = document.createElement("th");
+    let boxValue = document.createElement("th");
+    let passFail = document.createElement("div");
+
+    boxPicked.textContent = prisonerArray[nextSelection];
+    boxValue.textContent = boxArray[nextSelection];
+    passFail.textContent = "FAIL: " + count + " guesses";
+    passFail.style.color = "red";
+    boxValue.style.color = "red";
+    boxPicked.style.color = "red";
+
+    newTableRow1.appendChild(boxPicked);
+    newTableRow2.appendChild(boxValue);
+    container.appendChild(passFail);
 }
 
 function getLoopResults(prisonerArray, boxArray)
 {
     for(a = 1; a < 101; a++)
     {
-        let nextSelection = a;
-        let count = 1;
-
-        const prisonerNumber = document.createElement("div");
-
-        prisonerNumber.textContent = "Prisoner Number: " + a;
-        prisonerNumberDiv.appendChild(prisonerNumber);
+        createTable(a);
+        nextSelection = a;
+        count = 1;
+        let prisonerNumber = a;
 
         while(count < 101)
         {
-            if(count < 51 && prisonerArray[a] == boxArray[nextSelection])
+            if(boxArray[nextSelection] == prisonerArray[prisonerNumber] && count < 51)
             {
-                const passFail = document.createElement("div");
-                const boxPicked = document.createElement("th");
-                const boxValue = document.createElement("th");
-            
-                boxPicked.textContent = prisonerArray[count];
-                boxValue.textContent = boxArray[nextSelection];
-                passFail.textContent = "PASS";
-                passFail.style.color = "green";
-                boxValue.style.color = "green";
-                boxPicked.style.color = "green";
-
-                prisonerNumberDiv.appendChild(passFail);
-                boxValueTR.appendChild(boxValue);
-                boxPickedTR.appendChild(boxPicked);
-
-                count = 102;
-                a = 102;
-            }
-            else if(count > 50)
-            {
-                const passFail = document.createElement("div");
-                const boxPicked = document.createElement("th");
-                const boxValue = document.createElement("th");
-
-                boxPicked.textContent = prisonerArray[count];
-                boxValue.textContent = boxArray[nextSelection];
-                passFail.textContent = "FAIL";
-                passFail.style.color = "red";
-                boxValue.style.color = "red";
-                boxPicked.style.color = "red";
-
-                prisonerNumberDiv.appendChild(passFail);
-                boxValueTR.appendChild(boxValue);
-                boxPickedTR.appendChild(boxPicked);
-
-                a = 102;
+                passFunction(count);
                 count = 102;
             }
-
             else
             {
-                const boxPicked = document.createElement("th");
-                const boxValue = document.createElement("th");
+                let boxPicked = document.createElement("td");
+                let boxValue = document.createElement("td");
 
-                boxPicked.textContent = prisonerArray[count];
+                if(count > 50)
+                {
+                    boxPicked.style.color = "red"
+                }
+
+                if(boxArray[nextSelection] == prisonerArray[prisonerNumber])
+                {
+                    let passFail = document.createElement("div");
+                    passFail.textContent = "FAIL: " + count + " guesses";
+                    passFail.style.color = "red";
+                    container.appendChild(passFail);
+                    boxPicked.textContent = prisonerArray[nextSelection];
+                    boxValue.textContent = boxArray[nextSelection];
+    
+                    newTableRow1.appendChild(boxPicked);
+                    newTableRow2.appendChild(boxValue);
+                    count = 102;
+                }
+
+                boxPicked.textContent = prisonerArray[nextSelection];
                 boxValue.textContent = boxArray[nextSelection];
 
-                boxValueTR.appendChild(boxValue);
-                boxPickedTR.appendChild(boxPicked);
+                newTableRow1.appendChild(boxPicked);
+                newTableRow2.appendChild(boxValue);
 
                 nextSelection = boxArray[nextSelection];
                 count++;
