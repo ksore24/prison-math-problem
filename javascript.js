@@ -1,6 +1,7 @@
 let prisonerArray = createArray();
 let boxArray = createArray();
 let newBoxArray = [];
+let passCount = 0;
 var spacer;
 var tableHeading;
 var newTable;
@@ -31,6 +32,7 @@ function createArray()
 
 function loopStrategyButtonClicked()
 {   
+    passCount = 0;
     clearContainer(container);
     randomizeBoxOrder(boxArray);
     getLoopResults(prisonerArray, boxArray);
@@ -115,11 +117,28 @@ function getLoopResults(prisonerArray, boxArray)
         nextSelection = a;
         count = 1;
         let prisonerNumber = a;
+        if(passCount == 99)
+        {
+            const fullTestPass = document.createElement("div");
+            fullTestPass.textContent = "PASS";
+            fullTestPass.style.color = "green";
+            fullTestPass.style.fontSize = "24px";
+            container.insertBefore(fullTestPass, container.firstChild);
+        }
+        if (a == 100 && passCount < 99)
+        {
+            const fullTestPass = document.createElement("div");
+            fullTestPass.textContent = "FAIL";
+            fullTestPass.style.color = "red";
+            fullTestPass.style.fontSize = "24px";
+            container.insertBefore(fullTestPass, container.firstChild);
+        }
 
         while(count < 101)
         {
             if(boxArray[nextSelection] == prisonerArray[prisonerNumber] && count < 51)
             {
+                passCount++;
                 passFunction(count);
                 count = 102;
             }
@@ -162,6 +181,22 @@ function getRandomResults()
         count = 1;
         let prisonerNumber = a;
         randomBoxSelection();
+        if(passCount == 99)
+        {
+            const fullTestPass = document.createElement("div");
+            fullTestPass.textContent = "PASS";
+            fullTestPass.style.color = "green";
+            fullTestPass.style.fontSize = "24px";
+            container.insertBefore(fullTestPass, container.firstChild);
+        }
+        if (a == 100 && passCount < 99)
+        {
+            const fullTestPass = document.createElement("div");
+            fullTestPass.textContent = "FAIL";
+            fullTestPass.style.color = "red";
+            fullTestPass.style.fontSize = "24px";
+            container.insertBefore(fullTestPass, container.firstChild);
+        }
 
         while(count < 101)
         {
