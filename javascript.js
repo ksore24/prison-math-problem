@@ -40,6 +40,7 @@ function loopStrategyButtonClicked()
 
 function randomStrategyButtonClicked()
 {
+    passCount = 0;
     clearContainer(container);
     randomizeBoxOrder(boxArray);
     getRandomResults(prisonerArray, boxArray);
